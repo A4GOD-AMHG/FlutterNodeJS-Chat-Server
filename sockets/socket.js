@@ -5,34 +5,35 @@ const {connectedUser, disconnectedUser} = require('../controllers/socket');
 
 // Mensajes de Sockets
 io.on('connection', client => {
-    console.log('Cliente conectado');
-
     const [valid, uid] = checkJWT(client.handshake.headers['x-token']);
 
     // Verificar autenticación
     if (!valid) return client.disconnect();
 
+    console.log('Cliente conectado', uid);
+
     //Cliente autenticado
     connectedUser(uid);
 
-    // Ingresar al usuario en una sala en particular
-    // Sala Global, client.id
+    // Ingresar al usuario en una sala con su uid
     client.join(uid);
 
-    // Escuchar del cliente el personal-message
-    client.on('personal-message', async (payload) => {
-        io.to(payload.to).emit('personal-message', payload);
+    // Se reenvía al destinatario; el remitente se toma del token, no del payload
+    client.on('personal-message', (payload = {}) => {
+        if (!payload.to) return;
+        io.to(payload.to).emit('personal-message', {...payload, from: uid});
     });
 
-    client.on('delete-message', async (payload) => {
+    client.on('delete-message', (payload = {}) => {
+        if (!payload.to) return;
         io.to(payload.to).emit('delete-message', payload.id);
-    }, );
+    });
 
+    client.on('edit-message', (payload = {}) => {
+        if (!payload.to) return;
+        io.to(payload.to).emit('edit-message', {...payload, from: uid});
+    });
 
-    client.on('edit-message', async (payload) => {
-        io.to(payload.to).emit('edit-message', payload);
-    }, );
-    
     client.on('disconnect', () => {
         disconnectedUser(uid);
     });
