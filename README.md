@@ -55,7 +55,7 @@ npm start             # producción
 | Variable | Descripción |
 |----------|-------------|
 | `PORT` | Puerto del servidor (por defecto `3000`) |
-| `DB_CNN` | Cadena de conexión de MongoDB |
+| `DB_CNN` | Cadena de conexión de MongoDB (si existe `LOCAL_DB`, tiene prioridad) |
 | `JWT_KEY` | Secreto para firmar los JWT |
 
 ## API
