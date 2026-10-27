@@ -6,7 +6,7 @@ const { generateJWT } = require("../helpers/jwt");
 
 const createUser = async (req, res = response) =>{
 
-    const {email, password} = req.body;
+    const {name, email, password} = req.body;
 
     try {
 
@@ -18,7 +18,8 @@ const createUser = async (req, res = response) =>{
             });
         }
 
-        const  user = new User(req.body);
+        // Solo los campos permitidos: evita que el cliente fije `online` u otros campos
+        const user = new User({name, email});
 
         // Encriptar contrasena
         const salt = bcrypt.genSaltSync();
@@ -36,6 +37,7 @@ const createUser = async (req, res = response) =>{
         });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({
             ok: false,
             msg: 'Hable con el administrador',
@@ -77,8 +79,9 @@ const login = async (req, res = response) => {
         });
         
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
-            ok: true,
+            ok: false,
             msg: 'Hable con el administrador'
         });
         
@@ -89,15 +92,29 @@ const login = async (req, res = response) => {
 const renewToken = async(req, res = response) => {
     const uid = req.uid;
 
-    const token = await generateJWT(uid);
+    try {
+        const user = await User.findById(uid);
+        if(!user){
+            return res.status(404).json({
+                ok: false,
+                msg: 'Usuario no encontrado'
+            });
+        }
 
-    const user = await User.findById(uid);
+        const token = await generateJWT(uid);
 
-    res.json({
-        ok: true,
-        user, 
-        token
-    });
+        res.json({
+            ok: true,
+            user, 
+            token
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Hable con el administrador'
+        });
+    }
 }
 
 

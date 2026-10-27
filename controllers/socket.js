@@ -1,33 +1,19 @@
 const User = require('../models/user');
 
-const connectedUser = async(uid = '') => {
-    const user = await User.findById(uid);
-    user.online = true;
-    await user.save();
-    return user;
-
-}
-
-const disconnectedUser = async(uid = '') => {
-    const user = await User.findById(uid);
-    user.online = false;
-    await user.save();
-    return user;
-}
-
-
-
-const deleteMessage = async (uid = '') => {
-    try { 
-        const user = await User.findById(uid);
-        return true;
+const setOnline = async (uid, online) => {
+    try {
+        return await User.findByIdAndUpdate(uid, {online}, {new: true});
     } catch (error) {
-        return false;
+        console.error(error);
+        return null;
     }
 }
 
+const connectedUser = (uid = '') => setOnline(uid, true);
+
+const disconnectedUser = (uid = '') => setOnline(uid, false);
+
 module.exports = {
     connectedUser,
-    disconnectedUser,
-    deleteMessage
+    disconnectedUser
 }

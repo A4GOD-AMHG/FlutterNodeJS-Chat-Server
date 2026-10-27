@@ -33,17 +33,19 @@ app.use('/api/login', require('./routes/auth') );
 app.use('/api/users', require('./routes/users') );
 app.use('/api/messages', require('./routes/messages') );
 
+// Respuestas JSON consistentes para rutas inexistentes y errores no controlados
+app.use((req, res) => res.status(404).json({ ok: false, msg: 'Ruta no encontrada' }));
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(err.status || 500).json({ ok: false, msg: 'Hable con el administrador' });
+});
+
 
 // DB Config
-const connect = async ()=>{
-    await require('./database/config').dbConnection();
-    await server.listen( process.env.PORT, ( err ) => {
-        if ( err ) throw new Error(err);
-    
-        console.log('Servidor corriendo en puerto', process.env.PORT );
+const PORT = process.env.PORT || 3000;
+require('./database/config').dbConnection()
+    .then(() => server.listen(PORT, () => console.log('Servidor corriendo en puerto', PORT)))
+    .catch((err) => {
+        console.error(err.message);
+        process.exit(1);
     });
- }
- connect();
-
-
-

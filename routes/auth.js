@@ -22,7 +22,8 @@ router.post('/new', [
 
 router.post('/', [
     check('password', 'La contrasena es obligatoria').not().isEmpty(),
-    check('email', 'El correo es obligatorio').isEmail()
+    check('email', 'El correo es obligatorio').isEmail(),
+    validateFields
 ], login);
 
 router.get('/renew', validateJWT, renewToken);
