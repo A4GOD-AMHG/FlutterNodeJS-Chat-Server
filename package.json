@@ -1,24 +1,29 @@
 {
   "name": "chat_server",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.1.0",
+  "description": "Servidor de chat en tiempo real con Express, Socket.io y MongoDB",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "start:dev": "nodemon index.js"
   },
-  "author": "",
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "Alexis Manuel Hurtado Garcia",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-validator": "^6.14.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.3.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
     "morgan": "^1.10.0",
-    "socket.io": "^4.5.1"
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
